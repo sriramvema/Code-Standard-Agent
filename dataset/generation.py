@@ -2,7 +2,7 @@ from anthropic import Anthropic
 import json
 import os
 
-client = Anthropic(api_key="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")
+client = Anthropic(api_key="XXXXXXXXX")
 def clean(code):
     clean_prompt = """
     You are an AI that converts BAD, messy, chaotic, unoptimized code into clean code that follows coding standards.
