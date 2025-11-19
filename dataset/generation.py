@@ -2,26 +2,35 @@ from anthropic import Anthropic
 import json
 import os
 
-client = Anthropic(api_key="XXXXXXXXX")
+client = Anthropic(api_key="XXXXXXX")
 def clean(code):
-    clean_prompt = """
-    You are an AI that converts BAD, messy, chaotic, unoptimized code into clean code that follows coding standards.
-    Rules:
-    - Use descriptive, meaningful variable names
+    clean_prompt = f"""
+    You are an AI trained to rewrite messy Python code while preserving EXACT FUNCTIONALITY.
+
+    ### HARD RULES ###
+    - DO NOT CHANGE what the function does.
+    - DO NOT change return values.
+    - DO NOT change math, string manipulation, loops, or logic.
+    - The cleaned code MUST behave identically when executed.
+    - Only rewrite STYLE, not behavior.
+
+    ### STYLE RULES ###
+    - Improve variable names but keep semantics identical
+    - Maintain original algorithm
+    - Keep same inputs and same outputs
     - Use consistent indentation
     - Remove unused imports
-    - Use small, single-purpose functions
-    - Avoid deeply nested code
-    - Comments should be meaningful
-    - Only return the code
-    - DO NOT wrap the code in backticks. Output ONLY the raw code.
+    - Remove dead code
+    - Improve comments, but do not delete meaningful ones
+    - Output ONLY the code, no explanations, no backticks
 
-    Here is the code you should convert: {code}.
+    ### CODE TO CLEAN
+    {code}
     """
 
     response = client.messages.create(
-        model="claude-3-haiku-20240307",
-        max_tokens=300,
+        model="claude-haiku-4-5-20251001",
+        max_tokens=1500,
         messages=[{"role": "user", "content": clean_prompt}],
     )
 
@@ -30,23 +39,24 @@ def clean(code):
 
 def messy():
     messy_prompt = """
-    You are an AI that generates BAD, messy, chaotic, unoptimized code.
-    Rules:
-    - Unnecessary indentation
-    - Ugly variable names
-    - Useless comments
-    - Dead code
-    - Anti-patterns
-    - Only output the code.
-    - 10 to 25 lines of code
-    - DO NOT wrap the code in backticks. Output ONLY the raw code.
+    Produce messy Python code that still implements a REAL function.
 
-    Generate a messy Python function.
+    The code MUST:
+    - perform a real operation (math, string manipulation, sorting, filtering, etc.)
+    - contain unnecessary indentation
+    - contain bad variable names
+    - contain unnecessary variables
+    - contain dead code
+    - contain ugly comments
+    - follow the SAME algorithm from start to finish
+    - Output ONLY the code, no explanations, no backticks
+
+    Do NOT create random unrelated behavior.
     """
 
     response = client.messages.create(
-        model="claude-3-haiku-20240307",
-        max_tokens=300,
+        model="claude-sonnet-4-5-20250929",
+        max_tokens=1500,
         messages=[{"role": "user", "content": messy_prompt}],
     )
 
@@ -58,12 +68,17 @@ def messy():
     }
     return data
 
-dataset = []
-for i in range(0, 100):
-    dataset.append(messy())
-    print(i, " complete")
+with open("paired_codes2.json", "r", encoding="utf-8") as f:
+    dataset = json.load(f)
 
-with open("paired_codes.json", "w") as f:
+for i in range(4000):
+    pair = messy()
+    dataset.append(pair)
+    with open("paired_codes2.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(pair) + "\n")
+    print(i+1, " complete")
+
+with open("paired_codes2.json", "w") as f:
     json.dump(dataset, f, indent=2)
 
 print("Code saved → paired_codes.json")
