@@ -1,4 +1,4 @@
-# DeepSeek Code Cleaner — Fine-Tuned Code-Quality Model
+# Code Standard Agent — Fine-Tuned Code-Quality Model
 
 This project builds a fine-tuned **DeepSeek Coder** model capable of taking raw “messy” Python code and generating a **clean, standardized, and fully equivalent** Python version. The goal is to help developers maintain clean, Pythonic, and professional-quality code while preserving functional behavior.
 
