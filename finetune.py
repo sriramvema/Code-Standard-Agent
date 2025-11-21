@@ -68,7 +68,7 @@ training_args = TrainingArguments(
     learning_rate=2e-4,
     num_train_epochs=3,
     bf16=torch.cuda.is_available(),
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     save_total_limit=2,
     report_to="none",
 )
