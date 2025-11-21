@@ -68,17 +68,17 @@ def messy():
     }
     return data
 
-with open("paired_codes2.json", "r", encoding="utf-8") as f:
+with open("paired_codes.json", "r", encoding="utf-8") as f:
     dataset = json.load(f)
 
-for i in range(4000):
+for i in range(2600):
     pair = messy()
     dataset.append(pair)
-    with open("paired_codes2.jsonl", "a", encoding="utf-8") as f:
+    with open("paired_codes.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(pair) + "\n")
     print(i+1, " complete")
 
-with open("paired_codes2.json", "w") as f:
+with open("paired_codes.json", "w") as f:
     json.dump(dataset, f, indent=2)
 
 print("Code saved → paired_codes.json")
